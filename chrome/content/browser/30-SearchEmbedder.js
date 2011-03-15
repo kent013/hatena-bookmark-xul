@@ -113,7 +113,7 @@ extend(SearchEmbedder.prototype, {
         let head = this.doc.getElementsByTagName("head")[0];
         if (!head) return;
         let style = this.doc.createElement("style");
-        style.textContent = SearchEmbedder.STYLE + (this.site.data.style || "");
+        style.textContent = SearchEmbedder.STYLE + (this.site.query("style", this.doc) || "");
         head.appendChild(style);
     },
 
@@ -122,7 +122,7 @@ extend(SearchEmbedder.prototype, {
         let annotation = this.site.query("annotation", this.doc);
         if (!annotation) return null;
         let range = this.doc.createRange();
-        switch (this.site.data.annotationPosition || "last") {
+        switch (this.site.query("annotationPosition", this.doc) || "last") {
         case "before":
             range.selectNode(annotation);
             range.collapse(true);

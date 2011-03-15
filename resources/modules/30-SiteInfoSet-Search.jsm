@@ -31,33 +31,62 @@ let builtInSearchSiteInfo = [
                 table.tBodies[0].appendChild(tr);
                 return td;
             }
+            if(doc.URL.match(/tbs=(rltm|mbl)/)){
+                let block = doc.getElementById("rhs_block");
+                if(block){
+                    return block;
+                }
+            }
             return doc.getElementById("res");
         },
-        annotationPosition: 'first',
-        style: <![CDATA[
-            td > #hBookmark-search {
-                margin: 1em 0 0 0;
-                width: auto;
-                float: none;
-                white-space: normal;
+        annotationPosition: function (doc) {
+            if(doc.URL.match(/tbs=(rltm|mbl)/)){
+                return 'last';
+            }else{
+                return 'first';
             }
-            div > #hBookmark-search {
-                font-size: 0.8em;
-                margin-right: -32%;
+        },
+        style: function (doc) {
+            let style = <![CDATA[
+                td > #hBookmark-search {
+                    margin: 1em 0 0 0;
+                    width: auto;
+                    float: none;
+                    white-space: normal;
+                }
+                div > #hBookmark-search {
+                    font-size: 0.8em;
+                    margin-right: -32%;
+                }
+            ]]>.toString();
+            if(doc.URL.match(/tbs=(rltm|mbl)/)){
+                style += <![CDATA[
+                    div > #hBookmark-search {
+                        margin-right: auto;
+                        padding-left: 15px;
+                        float: none;
+                        width: auto;
+                    }
+                ]]>.toString();
             }
-        ]]>.toString(),
+            return style;
+        },
     },
     { // Yahoo Web Search
         url:        /^http:\/\/search\.yahoo(?:\.\w+){1,2}\/search\?/,
         baseDomain: /^yahoo\./,
         query:      /[?&;]p=([^?&;#]+)/,
         encoding:   /[?&;]ei=([\w-]+)/,
-        annotation: 'id("sIn")',
-        style: <![CDATA[
-            #hBookmark-search {
-                width: auto;
-            }
-        ]]>.toString(),
+        annotation: function (doc) {
+            return doc.getElementById("sIn");
+        },
+        style: function (doc) {
+            return <![CDATA[
+                #hBookmark-search {
+                    width: auto;
+                }
+            ]]>.toString();
+        },
     },
 ];
 
